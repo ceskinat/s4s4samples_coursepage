@@ -1,0 +1,168 @@
+{% extends "layout.html" %}
+{% block styles %}
+    {{super()}}
+{% endblock %}
+{% block content %}  
+
+<script src="https://malsup.github.io/jquery.form.js"></script>  
+<script>
+$(document).ready(function() {
+    // Attach the event listener to all forms in the document
+    $('form').submit(function(event) {
+        event.preventDefault();  // Prevent the form from submitting immediately
+
+        var form = $(this);  // Reference to the current form being submitted
+
+        // Fetch the authorization code from the server
+        $.get('/get-auth-code', function(response) {
+//            var apiKey = response.api_key;  // Assume the server responds with {api_key: "your-api-key"}
+            var apiKey = response.api_key;
+            var clientId = response.client_id;
+            // Assume the server responds with {api_key: "your-api-key"}
+
+            // Populate the hidden field with the retrieved API key for this specific form
+            form.find('#api_key').val(apiKey);
+            form.find('#client_id').val(clientId);
+
+            // Submit the form after the API key is set
+             form[0].submit();
+            setTimeout(function() {
+                                                form.find('#api_key').val('');
+                                                form.find('#client_id').val('');
+
+                                    }, 1000   )
+
+            // Clear the hidden field after form submission
+        }).fail(function() {
+            alert('Failed to retrieve the authorization code.');
+        });
+    });
+});
+</script>
+<div class="section-heading">Ders Seçimi</div>
+<div class="row">
+    <div class="col-lg-8 text-right">
+        <form action="/" method="POST" id="course-frm">
+            <select name="slct-course" onchange="$('#course-frm').submit();">
+                {% for course in courselist %}
+                    <option value='{{course.code}}' {% if request.form["slct-course"] == course.code %} selected {% endif %}> {{course.code}} - {{course.name}}
+
+                    </option>
+                {% endfor %}
+            </select>
+        </form>
+    </div>
+    <div class="col-lg-4 text-left">
+    {% if request.form["slct-course"] %}
+<!--
+        <form action="http://localhost:5010/routing_form" method="POST" target="_blank">
+-->
+        <form action="{{s4s4_address}}" method="POST" target="_blank">
+            <input type="hidden" name="otype" value="ders">
+            <input type="hidden" value='{{request.form["slct-course"]}}' name="oid">
+            <input type="hidden" name="userid" value='{{session.user.userid}}'>   
+            <input type="hidden" name="username" value='{{session.user.username}}'>   
+            <input type="hidden" name="client_id" id="client_id">   
+            <input type="hidden" name="api_key" id="api_key">   
+            {% if session.user.email %} 
+                <input type="hidden" name="email" value='{{session.user.email}}'>   
+            {% endif %} 
+            <button class="btn btn-aksiyon" type="submit" title='{{request.form["slct-course"]}} paylaşımlarına gitmek için tıklayınız'>
+                Paylaşımları Gör
+            </button>
+        </form>
+    {% endif %}
+    </div>
+</div>
+<div class="section-heading">Ders Oturumları</div>
+ <div class="lecture-list row">
+    {% for lecture in lectures %}
+<!--
+        <div class="col-lg-4">
+            <form action="http://localhost:5010/routing_form" method="POST" target="_blank">
+                <input type="hidden" name="otype" value="oturum">
+                <input type="hidden" name="oid" value='{{request.form["slct-course"]}}*!*!{{lecture.session_no}}'>
+                <input type="hidden" name="userid" value='{{session.user.userid}}'>   
+                <input type="hidden" name="username" value='{{session.user.username}}'>   
+                {% if session.user.email %} 
+                    <input type="hidden" name="email" value='{{session.user.email}}'>   
+                {% endif %} 
+                <button class="btn " type="submit">   {{lecture.description}} </button>
+
+            </form>
+        </div>
+-->
+            <div class="lecture-list-item col-lg-3 m-4">
+<!--
+            <form action="http://localhost:5010/routing_form" method="POST" target="_blank">
+-->            
+            <form action="{{s4s4_address}}" method="POST" target="_blank">
+                <input type="hidden" name="otype" value="oturum">
+                <input type="hidden" name="oid" value='{{request.form["slct-course"]}}*!*!{{lecture.session_no}}'>
+                <input type="hidden" name="userid" value='{{session.user.userid}}'>   
+                <input type="hidden" name="username" value='{{session.user.username}}'>   
+                <input type="hidden" name="client_id" id="client_id">   
+                <input type="hidden" name="api_key" id="api_key">   
+                {% if session.user.email %} 
+                    <input type="hidden" name="email" value='{{session.user.email}}'>   
+                {% endif %} 
+                <button class="btn" title='{{lecture.description}} paylaşımlarına gitmek için tıklayınız'>
+                <div class="row">
+                    <div class="col-lg-4">
+                        <div class="session-no" style="color: #{{lecture.session_no}}F00FF; font-size:200%; text-align:center;">{{lecture.session_no}}</div>
+<!--                    
+                        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" class="bi bi-person-video2" viewBox="0 0 16 16">
+                          <path d="M10 9.05a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z"/>
+                          <path d="M2 1a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2H2ZM1 3a1 1 0 0 1 1-1h2v2H1V3Zm4 10V2h9a1 1 0 0 1 1 1v9c0 .285-.12.543-.31.725C14.15 11.494 12.822 10 10 10c-3.037 0-4.345 1.73-4.798 3H5Zm-4-2h3v2H2a1 1 0 0 1-1-1v-1Zm3-1H1V8h3v2Zm0-3H1V5h3v2Z"/>
+                        </svg>
+-->
+                    </div>
+                    <div class="col-lg-8">
+                        <div><strong>{{lecture.description}}</strong></div>
+                        <div>Ders Tarihi: {{lecture.lecture_date.strftime("%d/%m/%Y")}}</div>
+                    </div>
+                </div>
+            </button>
+        </form>
+    </div>
+
+    {% endfor %}
+</div>
+<div class="section-heading">Konu Başlıkları</div>
+<div class="titles">
+    {% for title in titles %}
+        <div class="lecture-list-item m-4">
+<!--
+            <form action="http://localhost:5010/routing_form" method="POST" target="_blank">
+ -->
+            <form action="{{s4s4_address}}" method="POST" target="_blank">
+
+                <input type="hidden" name="otype" value="başlık">
+                <input type="hidden" name="oid" value='{{request.form["slct-course"]}}*!*!{{title.title}}'>
+                <input type="hidden" name="userid" value={{session.user.userid}}>   
+                <input type="hidden" name="username" value={{session.user.username}}>   
+                <input type="hidden" name="client_id" id="client_id">   
+                <input type="hidden" name="api_key" id="api_key">   
+                {% if session.user.email %} 
+                    <input type="hidden" name="email" value={{session.user.email}}>   
+                {% endif %} 
+                <button class="btn" type="submit" title='{{title.title}} paylaşımlarına gitmek için tıklayınız'>   {{title.title}} : {{title.description}} </button>
+
+            </form>
+        </div>
+
+    {% endfor %}
+
+</div>
+<div class="add-title">
+    <form action="/add_title" method="POST">
+        <input type="hidden" value='{{request.form["slct-course"]}}' name="inp-course">
+        <div class="input-group">
+            <input type="text" name="newtitle" required placeholder="Yeni ekleyeceğiniz başlığı giriniz" class="form-control">
+            <textarea name="description" placeholder="Başlıkla ilgili detayı buraya girebilirsiniz" class="form-control"></textarea>
+            <input type="submit" class="btn-aksiyon form-control" value="Başlık Ekle">
+    </form>
+</div>
+
+{% endblock %}
+

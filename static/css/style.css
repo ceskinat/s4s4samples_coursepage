@@ -1,0 +1,295 @@
+/*
+Created on Wed Feb  1 12:23:51 2023
+
+@author: cem
+*/
+
+body {
+#    background-image: url('/static/DALL·E 2023-02-03 09.34.52.jpg'); 
+
+}    
+div.container {
+#    background-color: whitesmoke;
+}
+div.jumbotron {
+    padding: 10px;
+    background-image: url('/static/newjumbo.jpeg'); 
+    }
+    
+div.finans-jumbo {
+    background-image: none;
+}
+div.jumbo-baslik {
+    text-align: center;
+    color: darkblue;
+    vertical-align: bottom;
+}
+div.jumbo-baslik h1{
+    font-size: 7vw;
+}
+
+div.teams{
+    font-size: 18px;
+    color: DarkBlue;  
+    text-align: right;
+
+}
+ 
+.btn-aksiyon, nav-item, nav-link {
+    background-color: lightgray;
+/*    border: 1px solid;
+    border-color: DarkBlue;
+*/
+    color: DarkBlue;
+    }
+
+.btn-aksiyon:hover, nav-item:hover, nav-link:hover {
+    background-color: DarkBlue;
+    color: whitesmoke;
+    }
+ 
+div.page-header {
+    background-color: DarkBlue;
+    color: whitesmoke;
+    text-align: center;
+#    width: 50%;
+    margin: auto;
+}
+
+li.duyuru {
+    text-align: left;
+} 
+
+li.duyuru:hover {
+    background-color: LightSteelBlue;
+}
+    
+div.section-heading {
+    font-size: 18px;
+    color: DarkSlateBlue;  
+    background-color: Lavender; 
+    margin-top: 5;
+    border: 1px dotted;
+    text-align: center;
+    
+}
+div.section-heading:hover {
+    background-color: DarkSlateBlue;  
+    color: Lavender; 
+    
+}
+
+div.section-heading-leading {
+    font-size: 18px;
+    color: whitesmoke;  
+    background-color: darkblue;     
+    margin-top: 5;
+    border: 1px dotted;
+    text-align: center;
+    
+}
+
+.section {
+    font-size: small;
+    margin-bottom: 30px;
+    padding: 5px;
+    border: 1px dotted;
+    background-color: ghostwhite;
+    height: 250px;
+    overflow: scroll;
+    }
+
+.section-leading {
+    font-size: small;
+    margin-bottom: 30px;
+    padding: 5px;
+/*    border: 1px dotted; */
+    background-color: ghostwhite;
+    height: 180px;
+    overflow: scroll;
+    }
+
+.section-full-height {
+    font-size: small;
+    margin-bottom: 30px;
+    padding: 5px;
+    border: 1px dotted;
+    background-color: ghostwhite;
+    overflow: scroll;
+    }
+
+div.section table {
+    font-size: small;
+    }
+.section-toggle {
+    width: 80%;
+#    display:none;
+    margin: auto;
+    margin-bottom: 50px;
+}
+.section-heading-toggle {
+    width: 80%;
+    margin: auto;
+}
+.section-heading-toggle span {
+    cursor: context-menu;
+}
+.toggle-winsize{
+    cursor: zoom-in;
+}
+div.personal-data{
+    color: DarkBlue;
+}
+div.course-list {
+    width: auto;
+    margin: auto;
+}
+div.odemeler {
+    border: 1px dotted;
+}
+
+div.odemeler h5 {
+    text-align: center;
+    color: darkblue;
+}
+div.std-details {
+    background-color: white;
+}
+
+div.err-display {
+    background-color: lightpink;
+    color: darkred;
+    text-align: center;
+#    border: 1px solid;
+    font-size: large;
+    width: 60%;
+    margin: 10px auto;
+    position: relative;
+
+}
+div.warning-display {
+    background-color: lightyellow;
+    color: slategrey;
+    text-align: center;
+    border: 1px solid;
+    font-size: large;
+    width: 60%;
+    margin: 10px auto;
+    position: relative;
+
+}
+
+div.success-display {
+#    background-color: lightyellow;
+    color: slategrey;
+    text-align: center;
+#    border: 1px solid;
+    font-size: large;
+    width: 60%;
+    margin: 10px auto;
+    position: relative;
+
+}
+
+a.btn-table {
+    color: black;
+}
+a.btn-table:hover {
+    text-decoration: none;
+}
+
+.table-grants tr:hover {
+    background-color: lightgray;
+    cursor: pointer;
+}
+
+.with-tooltip:hover:after{
+    content: attr(tooltip);
+    position: absolute;
+    padding: 5px;
+    border: 1px solid gray;
+    background: white;
+    font-size: 14px;
+}
+.card-prg-tbl {
+    font-size: 40%;
+}
+.card-prg-tbl tr:hover {
+    background-color: lightgray;
+    cursor: pointer;
+}
+
+.jmb-odeme {
+    text-align: center;
+    color: DarkBlue;
+    background-color: aliceblue;
+}
+
+.odeme-card-prg {
+    background-color: snow;
+    border: 1p dotted;
+    color: slategray;
+    margin-bottom: 10px;
+    
+}
+
+.video-display {
+    color: darkblue;
+    width: 80%;
+    margin: 0 auto;
+    border: 1px dotted;
+    padding: 20;
+}
+
+.course-modal-header {
+    color: darkblue;
+}
+
+.ll-container {
+    color: darkblue;
+    
+}
+.lecture-list-item {
+    padding: 20px;
+    border: 2px dotted;
+    border-radius: 4px;
+    background-color: Snow;
+}
+
+.lecture-list-item a {
+    color: DarkSlateBlue;
+    text-decoration: none;
+    
+}
+
+
+.lecture-list-item:hover {
+    background-color: LightSteelBlue;
+}
+
+.dersler tbody tr:hover {
+    background-color: LightSteelBlue;
+    cursor: pointer;    
+}
+
+.ogrfin-grants-list {
+    background-color: snow;
+    width: 60%;
+    margin: 10;
+}
+.ogrfin-section-title {
+    color: DarkBlue;
+#    text-align: center;
+    Margin: 20 0 10 0;
+}
+
+.authenticate-link a {
+    color: DarkBlue;
+    text-decoration: none;
+    cursor: pointer;
+    
+}
+.authenticate-link:hover {
+    background-color: LightSteelBlue;
+        
+}
