@@ -39,7 +39,7 @@ $(document).ready(function() {
     });
 });
 </script>
-<div class="section-heading">Ders Seçimi</div>
+<div class="section-heading">Select Course</div>
 <div class="row">
     <div class="col-lg-8 text-right">
         <form action="/" method="POST" id="course-frm">
@@ -58,7 +58,7 @@ $(document).ready(function() {
         <form action="http://localhost:5010/routing_form" method="POST" target="_blank">
 -->
         <form action="{{s4s4_address}}" method="POST" target="_blank">
-            <input type="hidden" name="otype" value="ders">
+            <input type="hidden" name="otype" value="course">
             <input type="hidden" value='{{request.form["slct-course"]}}' name="oid">
             <input type="hidden" name="userid" value='{{session.user.userid}}'>   
             <input type="hidden" name="username" value='{{session.user.username}}'>   
@@ -67,14 +67,14 @@ $(document).ready(function() {
             {% if session.user.email %} 
                 <input type="hidden" name="email" value='{{session.user.email}}'>   
             {% endif %} 
-            <button class="btn btn-aksiyon" type="submit" title='{{request.form["slct-course"]}} paylaşımlarına gitmek için tıklayınız'>
-                Paylaşımları Gör
+            <button class="btn btn-aksiyon" type="submit" title='click to see shares for {{request.form["slct-course"]}} '>
+                Shares for
             </button>
         </form>
     {% endif %}
     </div>
 </div>
-<div class="section-heading">Ders Oturumları</div>
+<div class="section-heading">Lectures/Sessions</div>
  <div class="lecture-list row">
     {% for lecture in lectures %}
 <!--
@@ -97,7 +97,7 @@ $(document).ready(function() {
             <form action="http://localhost:5010/routing_form" method="POST" target="_blank">
 -->            
             <form action="{{s4s4_address}}" method="POST" target="_blank">
-                <input type="hidden" name="otype" value="oturum">
+                <input type="hidden" name="otype" value="session">
                 <input type="hidden" name="oid" value='{{request.form["slct-course"]}}*!*!{{lecture.session_no}}'>
                 <input type="hidden" name="userid" value='{{session.user.userid}}'>   
                 <input type="hidden" name="username" value='{{session.user.username}}'>   
@@ -106,7 +106,7 @@ $(document).ready(function() {
                 {% if session.user.email %} 
                     <input type="hidden" name="email" value='{{session.user.email}}'>   
                 {% endif %} 
-                <button class="btn" title='{{lecture.description}} paylaşımlarına gitmek için tıklayınız'>
+                <button class="btn" title='click to see the shares for {{lecture.description}}'>
                 <div class="row">
                     <div class="col-lg-4">
                         <div class="session-no" style="color: #{{lecture.session_no}}F00FF; font-size:200%; text-align:center;">{{lecture.session_no}}</div>
@@ -119,7 +119,7 @@ $(document).ready(function() {
                     </div>
                     <div class="col-lg-8">
                         <div><strong>{{lecture.description}}</strong></div>
-                        <div>Ders Tarihi: {{lecture.lecture_date.strftime("%d/%m/%Y")}}</div>
+                        <div>Session Date: {{lecture.lecture_date.strftime("%d/%m/%Y")}}</div>
                     </div>
                 </div>
             </button>
@@ -128,7 +128,7 @@ $(document).ready(function() {
 
     {% endfor %}
 </div>
-<div class="section-heading">Konu Başlıkları</div>
+<div class="section-heading">Topics</div>
 <div class="titles">
     {% for title in titles %}
         <div class="lecture-list-item m-4">
@@ -137,7 +137,7 @@ $(document).ready(function() {
  -->
             <form action="{{s4s4_address}}" method="POST" target="_blank">
 
-                <input type="hidden" name="otype" value="başlık">
+                <input type="hidden" name="otype" value="title">
                 <input type="hidden" name="oid" value='{{request.form["slct-course"]}}*!*!{{title.title}}'>
                 <input type="hidden" name="userid" value={{session.user.userid}}>   
                 <input type="hidden" name="username" value={{session.user.username}}>   
@@ -146,7 +146,7 @@ $(document).ready(function() {
                 {% if session.user.email %} 
                     <input type="hidden" name="email" value={{session.user.email}}>   
                 {% endif %} 
-                <button class="btn" type="submit" title='{{title.title}} paylaşımlarına gitmek için tıklayınız'>   {{title.title}} : {{title.description}} </button>
+                <button class="btn" type="submit" title='click to see the shares for {{title.title}} '>   {{title.title}} : {{title.description}} </button>
 
             </form>
         </div>
@@ -158,9 +158,9 @@ $(document).ready(function() {
     <form action="/add_title" method="POST">
         <input type="hidden" value='{{request.form["slct-course"]}}' name="inp-course">
         <div class="input-group">
-            <input type="text" name="newtitle" required placeholder="Yeni ekleyeceğiniz başlığı giriniz" class="form-control">
-            <textarea name="description" placeholder="Başlıkla ilgili detayı buraya girebilirsiniz" class="form-control"></textarea>
-            <input type="submit" class="btn-aksiyon form-control" value="Başlık Ekle">
+            <input type="text" name="newtitle" required placeholder="Enter new topic" class="form-control">
+            <textarea name="description" placeholder="Enter the topic description" class="form-control"></textarea>
+            <input type="submit" class="btn-aksiyon form-control" value="Add Topic">
     </form>
 </div>
 

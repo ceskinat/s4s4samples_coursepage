@@ -55,20 +55,20 @@ $(document).ready(function() {
     <div class="jumbotron netkent xl-2" >
         <div class="row">
         <div class="col-md-2 text-left home-icon">
-                <a class="btn  m-2" href="/"  title="Ana Sayfam">
-                    <img src="{{url_for('static', filename='logo.png')}}">
+                <a class="btn  m-2" href="/"  title="Home Page">
+                    <img src="{{url_for('static', filename='sample_logo.png')}}">
                 </a>
         </div>
         <div class="jumbo-baslik col-xl-6 mt-5">
         <div style="vertical-align: bottom;">
 
-            <h4>Netkent Üniversitesi Ders İçerik Sayfaları<h4>
+            <h4>Sample University Course Content Pages<h4>
         </div>
         </div>
         <div class="col-xl-4 text-right">
             <div class="dropdown" style="text-align:right">
             {%if session.get("user") %}
-                Kullanıcı: {{session.user.username}} 
+                user: {{session.user.username}} 
         <!--        Kullanıcı:<a class="dropdown-toggle" data-toggle="dropdown">{{session.user.preferred_username}}</a> -->
         <!--        Kullanıcı:<a class="dropdown-toggl" data-toggle="dropdown">personals.name</a> -->
         <!--        <ul class="dropdown-menu">

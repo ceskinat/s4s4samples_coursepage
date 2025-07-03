@@ -4,7 +4,8 @@ app = Flask(__name__)
 app.config['SESSION_TYPE'] = 'filesystem'
 app.config['SECRET_KEY'] = 'KeB/9349q58vkdfjgkjc'
 
-S4S4_ADDRESS = 'http://localhost:5010/routing_form'
+""" configure your application here """
+S4S4_ADDRESS = 'http://localhost:5015/routing_form'
 API_CLIENTID = "coursepage1"
 API_KEY = "solus98765" 
 
@@ -23,16 +24,24 @@ import re
 import requests
 
 def get_courses(user):
-	db = client.netkent_lectures
-	return [{"code": x["ders_kodu"], "name": x["ders_adi"]} for x in db.courses.find()] 
+	db = client.coursepage
+	return [{"code": x["code"], "name": x["course_name"]} for x in db.courses.find()] 
 
 def get_course_lectures(code):
-	db = client.netkent_lectures
-	return list(db.lectures.find({"course": code}))
+	db = client.coursepage
+	res = db.courses.find_one({"code": code})
+	if res:
+		return res.get("lectures", [])
+	else:
+		return []
 
 def get_course_titles(code):
-	db = client.netkent_lectures
-	return list(db.titles.find({"course": code}))
+	db = client.coursepage
+	res = db.courses.find_one({"code": code})
+	if res:
+		return res.get("titles", [])
+	else:
+		return []
 
 @app.route('/', methods=["GET", "POST"])
 def course_page():
@@ -59,16 +68,18 @@ def course_page():
 
 @app.route('/add_title', methods=["POST"])
 def add_title():
-	db = client.netkent_lectures
+	db = client.coursepage
 	course = request.form["inp-course"]
 	baslik = request.form["newtitle"]
-	if db.titles.find_one({"course": course, 
-							"title": re.compile(baslik, re.I)}):
-		return "Bu başlık bu ders için daha önce yaratılmış"
-	db.titles.insert_one({"course": course,
-							"title": baslik,
-							"description": request.form.get("description", "")})
-	courses = get_courses()
+	if db.courses.find_one({"code": course, 
+							"titles.title": re.compile(baslik, re.I)}):
+		return "This topic is already present for this course"
+	db.courses.update_one({"code": course},
+						{"$push": {"titles": {"title": baslik,
+									"description": request.form.get("description", "")
+									}}
+						})
+	courses = get_courses(session["user"])
 	crs_code = request.form["inp-course"]
 	params = {"lectures": get_course_lectures(crs_code)}
 	params["titles"] = get_course_titles(crs_code)
@@ -76,18 +87,19 @@ def add_title():
 	return render_template("coursepage.html",
 						courselist=courses,
 						lectures=params.get("lectures", []),
-						titles=params.get("titles", [])
+						titles=params.get("titles", []),
+						s4s4_address=S4S4_ADDRESS
 							)
 
 @app.route('/usr_list', methods=["POST"])
 def usr_list():
-	db = client.netkent_lectures
+	db = client.coursepage
 	inp = request.form.get("name", "")
 	lst = []
-	for ogr in db.ogrenci.find({"$or": [{"ad": re.compile(inp, re.I)},
-										{"soyad": re.compile(inp, re.I)}]}):
-		name = ogr["ad"] + " " + ogr["soyad"]
-		oid = str(ogr["ogrenci_no"]) + "|*|*" + name + "|*|*" + ogr["email"]
+	for ogr in db.students.find({"$or": [{"name": re.compile(inp, re.I)},
+										{"surname": re.compile(inp, re.I)}]}):
+		name = ogr["name"] + " " + ogr["surname"]
+		oid = str(ogr["std_no"]) + "|*|*" + name + "|*|*" + ogr["email"]
 		lst.append({"id": oid,
 					"name": name})
 	return json.dumps(lst)	
@@ -140,13 +152,12 @@ def obj_lst():
 
     print("Userid: ", userid, " Input: ", inp)
 
-    dbn = client.netkent
-    db = client.netkent_lectures
+    db = client.coursepage
     doc = db.s4s4rights.find_one({"userid": userid})
     if not doc or doc["role"] == "student":
-        courselist = [x["ders_kodu"] for x in dbn.courselist.find({"ogrenci_no": userid})]
+        courselist = [x["code"] for x in db.courses.find({"students": userid})]
     elif doc.get("role") == "master":
-        courselist = [x["ders_kodu"] for x in db.courses.find()]
+        courselist = [x["code"] for x in db.courses.find()]
 
     elif doc.get("role") == "lecturer":
         courselist = doc["courses"]
@@ -156,47 +167,56 @@ def obj_lst():
     lst = []
 
     #courses
-    for crs in db.courses.find({"ders_kodu": {"$in": courselist},
-                                "$or": [{"ders_kodu": re.compile(inp, re.I)},
-                                        {"ders_adi": re.compile(inp, re.I)}]}):
-        lst.append({"id": {"id": ["ders", str(crs["ders_kodu"])], "name": crs["ders_adi"]},
-                    "name": "ders" + ":" + crs["ders_adi"]})
+    for crs in db.courses.find({"code": {"$in": courselist},
+                                "$or": [{"code": re.compile(inp, re.I)},
+                                        {"course_name": re.compile(inp, re.I)}]}):
+        lst.append({"id": {"id": ["course", str(crs["code"])], "name": crs["course_name"]},
+                    "name": "course" + ":" + crs["course_name"]})
 
     #lectures
-    for lect in db.lectures.find({"course": {"$in": courselist},
-                                    "$or": [{"course": re.compile(inp, re.I)},
-                                        {"description": re.compile(inp, re.I)}]}):
-        lst.append({"id": {"id": ["oturum", lect["course"] + "*!*!" + lect["session_no"]], "name": lect["description"]},
-                    "name": "oturum" + ":" + lect["description"]})
+    for course in db.courses.find({"code": {"$in": courselist},
+                                    "$or": [{"code": re.compile(inp, re.I)},
+                                    		{"course_name": re.compile(inp, re.I)},
+                                        {"lectures.description": re.compile(inp, re.I)}]}):
+    	for lect in course.get("lectures", []):
+    		if re.search(re.compile(inp, re.I), course["code"]) or re.search(re.compile(inp, re.I), course["course_name"]) or re.search(re.compile(inp, re.I), lect["description"]):
+	 	       lst.append({"id": {"id": ["session", course["code"] + "*!*!" + lect["session_no"]], "name": lect["description"]},
+    		                "name": "session" + ":" + lect["description"]})
 
     #titles
-    for title in db.titles.find({"course": {"$in": courselist},
-                                    "$or": [{"course": re.compile(inp, re.I)},
-                                            {"title": re.compile(inp, re.I)}]}):
-        lst.append({"id": {"id": ["başlık", title["course"] + "*!*!" + title["title"]], "name": title["title"]},
-                    "name": "başlık" + ":" + title["course"] + " " + title["title"]})
+    for course in db.courses.find({"code": {"$in": courselist},
+                                    "$or": [{"code": re.compile(inp, re.I)},
+                                    		{"course_name": re.compile(inp, re.I)},
+                                            {"titles.title": re.compile(inp, re.I)},
+                                            {"titles.description": re.compile(inp, re.I)}]}):
+    	for title in course.get("titles", []):
+    		reg = re.compile(inp, re.I)
+    		if re.search(reg, course["code"]) or re.search(reg, course["course_name"]) or re.search(reg, title["title"]) or re.search(reg, title["description"]):
+		        lst.append({"id": {"id": ["title", course["code"] + "*!*!" + title["title"]], "name": title["title"]}, "name": "title" + ":" + course["code"] + " " + title["title"]})
 
     return lst
 
 @app.route('/interfaces/coursepage/object_name', methods=['POST'])
 def obj_name():
 
-    otype = request.form["otype"]
-    oid = request.form["oid"]
-    db = client.netkent_lectures
-    if otype == "ders":
-        doc = db.courses.find_one({"ders_kodu": oid})
-        if doc:
-            return doc["ders_adi"]
-    elif otype in ["oturum", "başlık"]:
-        course = oid.split('*!*!')[0]
-        if otype == "oturum":
-            doc = db.lectures.find_one({"course": course,
-                                        "session_no": oid.split('*!*!')[1]})
-            if doc:
-                return doc["description"]
-        else: # otype == başlık
-            return oid.split('*!*!')[1]
+	otype = request.form["otype"]
+	oid = request.form["oid"]
+	db = client.coursepage
+	if otype == "course":
+		doc = db.courses.find_one({"code": oid})
+		if doc:
+			return doc["course_name"]
+	elif otype in ["session", "title"]:
+		course = oid.split('*!*!')[0]
+		if otype == "session":
+			doc = db.courses.find_one({"code": course})
+			for lect in doc.get("lectures", []):
+				if lect["session_no"] == oid.split('*!*!')[1]:
+					return lect["description"]
+			return ""
+
+		else: # otype == title
+			return oid.split('*!*!')[1]
 
 
 
@@ -213,17 +233,16 @@ def auth_users():
 	otype = request.form["otype"]
 	oid = request.form["oid"]
 
-	db = client.netkent_lectures
-	dbn = client.netkent
+	db = client.coursepage
 
 	auth_users = []
 	# admins
 	for admin in db.s4s4rights.find({"role": {"$in": ["master", "admin"]}}):
 	    auth_users.append({"id": admin["userid"], "name": admin["username"], "email": admin.get("email")})
 
-	if otype == "ders":
+	if otype == "course":
 	    course = oid
-	elif otype in ["oturum", "başlık"]:
+	elif otype in ["session", "title"]:
 	    course = oid.split('*!*!')[0]
 	else:
 	    course = ""
@@ -234,10 +253,13 @@ def auth_users():
 	    auth_users.append({"id": lect["userid"], "name": lect["username"], "email": lect.get("email")})
 
 	# students
-	for std in dbn.courselist.find({"ders_kodu": course}):
-	    ogr = dbn.ogrencilist.find_one({"ogrenci_no": std["ogrenci_no"]})
-	    if ogr:
-	        auth_users.append({"id": ogr["ogrenci_no"], "name": ogr["ad"] + " " + ogr["soyad"], "email": ogr["eposta_adresi"]})
+	doc = db.courses.find_one({"code": course})
+	if doc: 
+		stdlist = doc.get("students", [])
+		for std in db.students.find({"std_no": {"$in": stdlist}}):
+			auth_users.append({"id": std["std_no"], "name": std["name"] + " " + std["surname"], "email": std["email"]})
+
+	print(auth_users)
 
 	return auth_users
 
