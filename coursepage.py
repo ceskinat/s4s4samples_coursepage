@@ -25,7 +25,8 @@ import requests
 
 def get_courses(user):
 	db = client.coursepage
-	return [{"code": x["code"], "name": x["course_name"]} for x in db.courses.find()] 
+	# return [{"code": x["code"], "name": x["course_name"]} for x in db.courses.find()] 
+	return [{"code": x["code"], "name": x["course_name"]} for x in db.courses.find({"students": user["userid"]})] 
 
 def get_course_lectures(code):
 	db = client.coursepage
