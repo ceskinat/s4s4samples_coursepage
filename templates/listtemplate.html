@@ -28,7 +28,11 @@ Created on Tue Aug 29 15:25:26 2023
 //                $("#dropdown").attr('size', sz);
                 dropdown.attr('size', sz);
                 console.log(sz);                
-                
+                if (result.length === 0) {
+                    dropdown.css('display', 'none');
+                } else{
+                    dropdown.css('display', 'block');
+                }
                 $.each(result, function(){
 //                    $("#dropdown").append("<option value=" + this.id +">" + this.name + "</option>")
 //                    dropdown.append("<option value='" + JSON.stringify(this.id) +"'>" + this.name + "</option>")
@@ -70,8 +74,8 @@ Created on Tue Aug 29 15:25:26 2023
  -->   
                     <input type='submit' id='tag-submit'  class='btn-aksiyon' value='{{btn_content}}'>
               </div>
-            <div class="acc-list obj-list" id="obj-list" onclick="selectObj(this)" ondblclick="selectObj(this); $(this).parents('form').submit()">
-                <select id="slct-obj">
+            <div class="acc-list obj-list" id="obj-list" >
+                <select id="slct-obj" style="display: none;" onclick="selectObj(this)" ondblclick="selectObj(this); $(this).parents('form').submit()">
                 </select>
             </div>
 <!--
