@@ -1,0 +1,45 @@
+# macOS system files
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Custom folder icons (often causes Git corruption)
+.Icon*
+Icon?
+
+# Thumbnails and Finder junk
+._*
+.Spotlight-V100
+.Trashes
+.fseventsd
+.VolumeIcon.icns
+
+# macOS Time Machine backups
+.TemporaryItems
+.Com.apple.timemachine.donotpresent
+.Backup*
+
+# Disk images & resource forks
+*.dmg
+*.sparseimage
+
+# Windows reserved names (cross-platform safety)
+con/
+aux/
+nul/
+prn/
+COM[1-9]/
+LPT[1-9]/
+
+# Node / Python / general dev folders (optional, remove if not needed)
+node_modules/
+venv/
+__pycache__/
+*.pyc
+
+# IDE & editor settings (optional)
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
