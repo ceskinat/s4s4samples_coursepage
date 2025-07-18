@@ -4,6 +4,9 @@ app = Flask(__name__)
 app.config['SESSION_TYPE'] = 'filesystem'
 app.config['SECRET_KEY'] = 'KeB/9349q58vkdfjgkjc'
 
+app.jinja_loader.searchpath.append('shared/combobox/templates')
+
+
 """ configure your application here """
 S4S4_ADDRESS = 'http://localhost:5015/routing_form'
 API_CLIENTID = "coursepage1"

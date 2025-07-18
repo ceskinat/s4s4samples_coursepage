@@ -1,0 +1,3 @@
+[submodule "shared/combobox"]
+	path = shared/combobox
+	url = https://github.com/ceskinat/flask-combobox.git
